@@ -1,0 +1,677 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Curriculum – AVMusic&Jam</title>
+<link href="https://fonts.googleapis.com/css2?family=Playfair+Display:wght@400;700;900&family=Cinzel:wght@400;600;700&family=Lato:wght@300;400;700&display=swap" rel="stylesheet">
+<style>
+  :root {
+    --deep-purple: #1a0f2e;
+    --mid-purple: #2a1a4e;
+    --light-purple: #3d2970;
+    --gold: #c9a227;
+    --gold-light: #e4c05a;
+    --gold-pale: #f0d98a;
+    --violet: #7c3aed;
+    --cream: #f5edd6;
+    --white: #ffffff;
+    --text-muted: #b8a9d4;
+    --beginner: #3da86e;
+    --beginner-dim: rgba(61,168,110,0.12);
+    --intermediate: #c9a227;
+    --intermediate-dim: rgba(201,162,39,0.12);
+    --advanced: #a855f7;
+    --advanced-dim: rgba(168,85,247,0.12);
+  }
+
+  * { margin: 0; padding: 0; box-sizing: border-box; }
+  html { scroll-behavior: smooth; }
+  body { background: var(--deep-purple); color: var(--cream); font-family: 'Lato', sans-serif; overflow-x: hidden; }
+  body::before {
+    content: ''; position: fixed; inset: 0;
+    background-image: url("data:image/svg+xml,%3Csvg viewBox='0 0 256 256' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.9' numOctaves='4' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)' opacity='0.04'/%3E%3C/svg%3E");
+    pointer-events: none; z-index: 0; opacity: 0.4;
+  }
+
+  /* NAV */
+  nav { position: fixed; top: 0; left: 0; right: 0; z-index: 100; padding: 18px 5%; display: flex; align-items: center; justify-content: space-between; background: rgba(18,8,35,0.9); backdrop-filter: blur(12px); border-bottom: 1px solid rgba(201,162,39,0.2); }
+  .nav-logo { font-family: 'Cinzel', serif; font-size: 1.3rem; font-weight: 700; letter-spacing: 0.05em; text-decoration: none; }
+  .nav-logo span.av { color: var(--gold); }
+  .nav-logo span.amp { color: var(--violet); }
+  .nav-logo span.rest { color: var(--white); }
+  .nav-links { display: flex; gap: 2rem; list-style: none; }
+  .nav-links a { color: var(--text-muted); text-decoration: none; font-size: 0.85rem; letter-spacing: 0.1em; text-transform: uppercase; transition: color 0.3s; }
+  .nav-links a:hover, .nav-links a.active { color: var(--gold); }
+  .nav-cta { background: linear-gradient(135deg, var(--gold), var(--gold-light)); color: var(--deep-purple); font-family: 'Cinzel', serif; font-weight: 700; font-size: 0.8rem; letter-spacing: 0.1em; padding: 10px 22px; text-transform: uppercase; text-decoration: none; transition: opacity 0.3s, transform 0.2s; display: inline-block; }
+  .nav-cta:hover { opacity: 0.9; transform: translateY(-1px); }
+
+  /* PAGE HERO */
+  .page-hero {
+    min-height: 50vh; display: flex; flex-direction: column; align-items: center; justify-content: center;
+    text-align: center; padding: 140px 5% 70px; position: relative;
+    background: radial-gradient(ellipse 80% 60% at 50% 40%, rgba(124,58,237,0.22) 0%, transparent 70%),
+                linear-gradient(180deg, #120823 0%, #1a0f2e 60%, #0f0820 100%);
+  }
+  .breadcrumb { font-size: 0.75rem; letter-spacing: 0.3em; text-transform: uppercase; color: var(--text-muted); margin-bottom: 1.5rem; }
+  .breadcrumb a { color: var(--gold); text-decoration: none; }
+  .breadcrumb span { margin: 0 0.5rem; }
+  .page-title { font-family: 'Cinzel', serif; font-size: clamp(2.5rem, 6vw, 4.5rem); font-weight: 700; color: var(--white); letter-spacing: 0.04em; margin-bottom: 0.5rem; animation: fadeUp 0.8s ease both; }
+  .page-subtitle { font-family: 'Lato', sans-serif; font-weight: 300; font-size: 1rem; letter-spacing: 0.3em; text-transform: uppercase; color: var(--gold); animation: fadeUp 0.8s 0.15s ease both; }
+  @keyframes fadeUp { from { opacity: 0; transform: translateY(28px); } to { opacity: 1; transform: translateY(0); } }
+
+  .level-pills {
+    display: flex; gap: 1rem; flex-wrap: wrap; justify-content: center; margin-top: 2rem;
+    animation: fadeUp 0.8s 0.3s ease both;
+  }
+  .level-pill {
+    display: inline-flex; align-items: center; gap: 0.5rem; padding: 8px 20px;
+    border-radius: 0; font-family: 'Cinzel', serif; font-size: 0.75rem; letter-spacing: 0.15em;
+    text-transform: uppercase; font-weight: 700; text-decoration: none; transition: transform 0.2s, box-shadow 0.2s;
+  }
+  .level-pill:hover { transform: translateY(-2px); }
+  .pill-b { background: var(--beginner); color: #0d2b1a; }
+  .pill-i { background: var(--gold); color: var(--deep-purple); }
+  .pill-a { background: var(--advanced); color: white; }
+
+  /* CONTENT */
+  .page-content { position: relative; z-index: 1; }
+
+  .divider { display: flex; align-items: center; gap: 1rem; margin: 0 auto 2.5rem; max-width: 300px; }
+  .divider::before, .divider::after { content: ''; flex: 1; height: 1px; background: linear-gradient(90deg, transparent, var(--gold), transparent); }
+  .divider-icon { color: var(--gold); font-size: 1.1rem; }
+
+  /* OVERVIEW CARDS */
+  .overview-section { background: linear-gradient(180deg, #0f0820 0%, var(--mid-purple) 100%); padding: 70px 5%; }
+  .section-inner { max-width: 1100px; margin: 0 auto; }
+  .section-label { font-family: 'Lato'; font-size: 0.72rem; letter-spacing: 0.4em; text-transform: uppercase; color: var(--gold); text-align: center; margin-bottom: 0.8rem; }
+  .section-title { font-family: 'Cinzel', serif; font-size: clamp(1.6rem, 3.5vw, 2.4rem); font-weight: 700; text-align: center; color: var(--white); letter-spacing: 0.05em; margin-bottom: 0.5rem; }
+
+  .overview-grid { display: grid; grid-template-columns: repeat(3, 1fr); gap: 2rem; margin-top: 3rem; }
+  .ov-card {
+    padding: 36px 28px; text-align: center; position: relative; overflow: hidden;
+    transition: transform 0.3s, box-shadow 0.3s;
+  }
+  .ov-card:hover { transform: translateY(-5px); }
+  .ov-card.beginner { border: 1px solid rgba(61,168,110,0.35); background: var(--beginner-dim); }
+  .ov-card.intermediate { border: 1px solid rgba(201,162,39,0.35); background: var(--intermediate-dim); }
+  .ov-card.advanced { border: 1px solid rgba(168,85,247,0.35); background: var(--advanced-dim); }
+  .ov-icon { font-size: 2.5rem; margin-bottom: 1rem; }
+  .ov-badge {
+    display: inline-block; font-family: 'Cinzel', serif; font-size: 0.65rem; letter-spacing: 0.2em;
+    text-transform: uppercase; padding: 5px 14px; margin-bottom: 1rem;
+  }
+  .beginner .ov-badge { background: rgba(61,168,110,0.2); color: var(--beginner); border: 1px solid rgba(61,168,110,0.4); }
+  .intermediate .ov-badge { background: rgba(201,162,39,0.2); color: var(--gold); border: 1px solid rgba(201,162,39,0.4); }
+  .advanced .ov-badge { background: rgba(168,85,247,0.2); color: #c084fc; border: 1px solid rgba(168,85,247,0.4); }
+  .ov-title { font-family: 'Cinzel', serif; font-size: 1.2rem; font-weight: 700; color: var(--white); margin-bottom: 0.8rem; }
+  .ov-desc { font-size: 0.88rem; line-height: 1.7; color: var(--text-muted); margin-bottom: 1.2rem; }
+  .ov-who { font-size: 0.8rem; font-style: italic; color: rgba(245,237,214,0.5); }
+
+  /* LEVEL SECTIONS */
+  .level-section { padding: 80px 5%; }
+  .level-section.sec-beginner { background: linear-gradient(180deg, var(--mid-purple) 0%, #120d25 100%); }
+  .level-section.sec-intermediate { background: linear-gradient(180deg, #120d25 0%, #1a0f2e 100%); }
+  .level-section.sec-advanced { background: linear-gradient(180deg, #1a0f2e 0%, #0d0620 100%); }
+
+  .level-header { text-align: center; margin-bottom: 3.5rem; }
+  .level-icon { font-size: 3rem; margin-bottom: 1rem; }
+  .level-title { font-family: 'Cinzel', serif; font-size: clamp(1.8rem, 4vw, 3rem); font-weight: 700; color: var(--white); letter-spacing: 0.05em; }
+  .level-title.b { color: var(--beginner); }
+  .level-title.i { color: var(--gold); }
+  .level-title.a { color: #c084fc; }
+  .level-subtitle { font-size: 0.85rem; letter-spacing: 0.2em; text-transform: uppercase; margin-top: 0.5rem; }
+  .level-subtitle.b { color: rgba(61,168,110,0.7); }
+  .level-subtitle.i { color: rgba(201,162,39,0.7); }
+  .level-subtitle.a { color: rgba(168,85,247,0.7); }
+
+  /* BIG TABLES */
+  .table-container { overflow-x: auto; border-radius: 0; box-shadow: 0 0 60px rgba(0,0,0,0.4); }
+  .big-table { width: 100%; border-collapse: collapse; font-size: 0.92rem; min-width: 700px; }
+
+  /* Beginner table */
+  .big-table.bt-b thead tr { background: rgba(61,168,110,0.18); }
+  .big-table.bt-b th { color: var(--beginner); border-bottom: 2px solid rgba(61,168,110,0.4); }
+  .big-table.bt-b tbody tr:hover td { background: rgba(61,168,110,0.05); }
+  .big-table.bt-b .row-icon-cell { border-left: 3px solid var(--beginner); }
+
+  /* Intermediate table */
+  .big-table.bt-i thead tr { background: rgba(201,162,39,0.15); }
+  .big-table.bt-i th { color: var(--gold); border-bottom: 2px solid rgba(201,162,39,0.4); }
+  .big-table.bt-i tbody tr:hover td { background: rgba(201,162,39,0.05); }
+  .big-table.bt-i .row-icon-cell { border-left: 3px solid var(--gold); }
+
+  /* Advanced table */
+  .big-table.bt-a thead tr { background: rgba(168,85,247,0.15); }
+  .big-table.bt-a th { color: #c084fc; border-bottom: 2px solid rgba(168,85,247,0.4); }
+  .big-table.bt-a tbody tr:hover td { background: rgba(168,85,247,0.05); }
+  .big-table.bt-a .row-icon-cell { border-left: 3px solid #a855f7; }
+
+  .big-table th {
+    font-family: 'Cinzel', serif; font-size: 0.78rem; letter-spacing: 0.15em; text-transform: uppercase;
+    padding: 18px 20px; text-align: left;
+  }
+  .big-table td {
+    padding: 16px 20px; color: var(--cream); border-bottom: 1px solid rgba(255,255,255,0.05);
+    vertical-align: top; line-height: 1.6; background: rgba(10,5,24,0.6);
+    transition: background 0.25s;
+  }
+  .big-table tbody tr:last-child td { border-bottom: none; }
+  .row-num {
+    font-family: 'Cinzel', serif; font-size: 0.7rem; color: rgba(245,237,214,0.3);
+    font-weight: 700; white-space: nowrap;
+  }
+  .row-icon { font-size: 1.5rem; }
+  .row-icon-cell { padding: 16px 12px 16px 20px !important; }
+  .topic-name {
+    font-family: 'Cinzel', serif; font-size: 0.85rem; font-weight: 700;
+    color: var(--white); letter-spacing: 0.05em; display: block; margin-bottom: 4px;
+  }
+  .topic-sub { font-size: 0.78rem; color: var(--text-muted); }
+  .tag {
+    display: inline-block; font-size: 0.68rem; letter-spacing: 0.1em; text-transform: uppercase;
+    padding: 3px 10px; border-radius: 0; font-family: 'Cinzel', serif; margin-top: 6px;
+  }
+  .tag-b { background: rgba(61,168,110,0.15); color: #6ee7a8; border: 1px solid rgba(61,168,110,0.3); }
+  .tag-i { background: rgba(201,162,39,0.12); color: var(--gold-pale); border: 1px solid rgba(201,162,39,0.3); }
+  .tag-a { background: rgba(168,85,247,0.12); color: #d4a8ff; border: 1px solid rgba(168,85,247,0.3); }
+
+  /* PROGRESSION BAR */
+  .progression-section { background: #0d0620; padding: 70px 5%; }
+  .prog-inner { max-width: 900px; margin: 0 auto; text-align: center; }
+  .prog-bar { display: flex; align-items: stretch; margin: 3rem 0 2rem; border: 1px solid rgba(201,162,39,0.2); overflow: hidden; }
+  .prog-step { flex: 1; padding: 28px 20px; text-align: center; position: relative; }
+  .prog-step::after { content: '›'; position: absolute; right: -8px; top: 50%; transform: translateY(-50%); font-size: 1.5rem; color: rgba(201,162,39,0.4); z-index: 2; }
+  .prog-step:last-child::after { display: none; }
+  .prog-step.ps-b { background: rgba(61,168,110,0.08); border-right: 1px solid rgba(61,168,110,0.2); }
+  .prog-step.ps-i { background: rgba(201,162,39,0.08); border-right: 1px solid rgba(201,162,39,0.2); }
+  .prog-step.ps-a { background: rgba(168,85,247,0.08); }
+  .ps-icon { font-size: 2rem; margin-bottom: 0.6rem; }
+  .ps-name { font-family: 'Cinzel', serif; font-size: 0.85rem; font-weight: 700; letter-spacing: 0.1em; text-transform: uppercase; }
+  .ps-b .ps-name { color: var(--beginner); }
+  .ps-i .ps-name { color: var(--gold); }
+  .ps-a .ps-name { color: #c084fc; }
+  .ps-range { font-size: 0.75rem; color: var(--text-muted); margin-top: 4px; }
+  .ps-desc { font-size: 0.78rem; line-height: 1.5; color: rgba(245,237,214,0.5); margin-top: 8px; }
+
+  /* CTA */
+  .page-cta { text-align: center; padding: 70px 5%; background: linear-gradient(135deg, #120823 0%, var(--light-purple) 50%, #120823 100%); border-top: 1px solid rgba(201,162,39,0.15); }
+  .page-cta h3 { font-family: 'Cinzel', serif; font-size: 1.8rem; color: var(--white); margin-bottom: 1rem; }
+  .page-cta p { color: var(--text-muted); margin-bottom: 2rem; font-size: 0.95rem; }
+  .cta-btn { display: inline-block; background: linear-gradient(135deg, var(--gold), var(--gold-light)); color: var(--deep-purple); font-family: 'Cinzel', serif; font-weight: 700; font-size: 0.9rem; letter-spacing: 0.12em; padding: 16px 42px; text-transform: uppercase; text-decoration: none; transition: transform 0.2s, box-shadow 0.3s; box-shadow: 0 8px 40px rgba(201,162,39,0.3); margin: 0.4rem; }
+  .cta-btn:hover { transform: translateY(-3px); box-shadow: 0 16px 50px rgba(201,162,39,0.45); }
+  .cta-btn.outline { background: transparent; color: var(--gold); border: 2px solid var(--gold); box-shadow: none; }
+  .cta-btn.outline:hover { background: rgba(201,162,39,0.08); }
+
+  /* FOOTER */
+  footer { background: #080314; border-top: 1px solid rgba(201,162,39,0.15); padding: 24px 5%; display: flex; align-items: center; justify-content: space-between; flex-wrap: wrap; gap: 1rem; }
+  .footer-logo { font-family: 'Cinzel', serif; font-size: 1rem; font-weight: 700; text-decoration: none; }
+  .footer-logo .av { color: var(--gold); } .footer-logo .amp { color: var(--violet); } .footer-logo .rest { color: var(--white); }
+  .footer-copy { font-size: 0.78rem; color: rgba(184,169,212,0.5); }
+
+  /* SCROLL REVEAL */
+  .reveal { opacity: 0; transform: translateY(30px); transition: opacity 0.7s ease, transform 0.7s ease; }
+  .reveal.visible { opacity: 1; transform: none; }
+
+  @media (max-width: 768px) {
+    .nav-links { display: none; }
+    .overview-grid { grid-template-columns: 1fr; }
+    .prog-bar { flex-direction: column; }
+    .prog-step::after { display: none; }
+    .prog-step { border-right: none !important; border-bottom: 1px solid rgba(255,255,255,0.07); }
+  }
+
+  /* ── HAMBURGER / MOBILE MENU ── */
+  .hamburger {
+    display: none;
+    flex-direction: column;
+    justify-content: center;
+    gap: 5px;
+    cursor: pointer;
+    padding: 6px;
+    background: none;
+    border: none;
+    z-index: 200;
+  }
+  .hamburger span {
+    display: block;
+    width: 24px;
+    height: 2px;
+    background: var(--gold);
+    border-radius: 2px;
+    transition: transform 0.3s, opacity 0.3s;
+  }
+  .hamburger.open span:nth-child(1) { transform: translateY(7px) rotate(45deg); }
+  .hamburger.open span:nth-child(2) { opacity: 0; }
+  .hamburger.open span:nth-child(3) { transform: translateY(-7px) rotate(-45deg); }
+
+  .mobile-menu {
+    display: none;
+    position: fixed;
+    top: 61px;
+    left: 0;
+    width: 200px;
+    background: rgba(18, 8, 35, 0.97);
+    backdrop-filter: blur(16px);
+    border-right: 1px solid rgba(201,162,39,0.25);
+    border-bottom: 1px solid rgba(201,162,39,0.25);
+    z-index: 150;
+    padding: 12px 0;
+    transform: translateX(-100%);
+    transition: transform 0.3s ease;
+  }
+  .mobile-menu.open {
+    display: block;
+    transform: translateX(0);
+  }
+  .mobile-menu ul {
+    list-style: none;
+    margin: 0;
+    padding: 0;
+  }
+  .mobile-menu ul li a {
+    display: block;
+    padding: 14px 24px;
+    color: var(--text-muted);
+    text-decoration: none;
+    font-size: 0.82rem;
+    letter-spacing: 0.12em;
+    text-transform: uppercase;
+    font-family: 'Cinzel', serif;
+    border-bottom: 1px solid rgba(201,162,39,0.08);
+    transition: color 0.2s, background 0.2s;
+  }
+  .mobile-menu ul li:last-child a { border-bottom: none; }
+  .mobile-menu ul li a:hover, .mobile-menu ul li a.active { color: var(--gold); background: rgba(201,162,39,0.06); }
+
+  @media (max-width: 768px) {
+    .hamburger { display: flex; }
+  }
+
+</style>
+</head>
+<body>
+
+<!-- NAV -->
+<nav>
+  <button class="hamburger" id="hamburger" aria-label="Open menu"><span></span><span></span><span></span></button>
+  <a href="index.html" class="nav-logo"><span class="av">AV</span><span class="rest">MUSIC</span><span class="amp">&</span><span class="rest">JAM</span></a>
+  <ul class="nav-links">
+    <li><a href="about.html">About</a></li>
+    <li><a href="curriculum.html" class="active">Curriculum</a></li>
+    <li><a href="index.html#pricing">Pricing</a></li>
+    <li><a href="index.html#contact">Contact</a></li>
+  </ul>
+  <a href="mailto:avmusicandjam25@gmail.com" class="nav-cta">Book Free Trial</a>
+</nav>
+
+<!-- MOBILE MENU -->
+<div class="mobile-menu" id="mobile-menu">
+  <ul>
+    <li><a href="index.html">Home</a></li>
+    <li><a href="about.html">About</a></li>
+    <li><a href="index.html#pricing">Pricing</a></li>
+    <li><a href="index.html#contact">Contact</a></li>
+  </ul>
+</div>
+
+
+<!-- PAGE HERO -->
+<div class="page-hero">
+  <p class="breadcrumb"><a href="index.html">Home</a><span>›</span>Curriculum</p>
+  <h1 class="page-title">The Curriculum</h1>
+  <p class="page-subtitle">Structured · Personalized · Progressive</p>
+  <div class="level-pills">
+    <a href="#beginner" class="level-pill pill-b">🌱 Beginner</a>
+    <a href="#intermediate" class="level-pill pill-i">🎵 Intermediate</a>
+    <a href="#advanced" class="level-pill pill-a">🏆 Advanced</a>
+  </div>
+</div>
+
+<div class="page-content">
+
+  <!-- OVERVIEW -->
+  <section class="overview-section">
+    <div class="section-inner">
+      <p class="section-label reveal">Three Levels, One Journey</p>
+      <h2 class="section-title reveal">Where Do You Fit?</h2>
+      <div class="divider reveal"><span class="divider-icon">𝄞</span></div>
+
+      <div class="overview-grid">
+        <div class="ov-card beginner reveal">
+          <div class="ov-icon">🌱</div>
+          <div class="ov-badge">Level 1</div>
+          <h3 class="ov-title">Beginner</h3>
+          <p class="ov-desc">Build a strong foundation in technique, note reading, basic theory, and your first real songs. Perfect for those just starting out.</p>
+          <p class="ov-who">Best for: Ages 6+ with no prior experience, or students returning after a long break.</p>
+        </div>
+        <div class="ov-card intermediate reveal">
+          <div class="ov-icon">🎵</div>
+          <div class="ov-badge">Level 2</div>
+          <h3 class="ov-title">Intermediate</h3>
+          <p class="ov-desc">Expand your chord vocabulary, play in multiple keys, start improvising, and develop your ear. This is where musicianship comes alive.</p>
+          <p class="ov-who">Best for: Students who know basic notes and can play simple songs with both hands.</p>
+        </div>
+        <div class="ov-card advanced reveal">
+          <div class="ov-icon">🏆</div>
+          <div class="ov-badge">Level 3</div>
+          <h3 class="ov-title">Advanced</h3>
+          <p class="ov-desc">Master performance, complex harmony, improvisation over chord changes, composition, and music technology for the modern musician.</p>
+          <p class="ov-who">Best for: Students with solid technique ready to develop professional-level musicianship.</p>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- ── BEGINNER ── -->
+  <section id="beginner" class="level-section sec-beginner">
+    <div class="section-inner">
+      <div class="level-header reveal">
+        <div class="level-icon">🌱</div>
+        <h2 class="level-title b">Beginner Curriculum</h2>
+        <p class="level-subtitle b">Foundation · Exploration · First Songs</p>
+      </div>
+      <div class="table-container reveal">
+        <table class="big-table bt-b">
+          <thead>
+            <tr>
+              <th style="width:40px">#</th>
+              <th style="width:50px"></th>
+              <th style="width:22%">Topic</th>
+              <th style="width:32%">What You'll Learn</th>
+              <th>Key Exercises &amp; Activities</th>
+              <th>Skills You'll Gain</th>
+            </tr>
+          </thead>
+          <tbody>
+            <tr>
+              <td><span class="row-num">01</span></td>
+              <td class="row-icon-cell"><span class="row-icon">🎹</span></td>
+              <td><span class="topic-name">Piano Foundations</span><span class="topic-sub">Getting Comfortable</span></td>
+              <td>Proper posture, hand position, and finger numbering (1–5); navigating the keyboard layout; understanding octaves and note names (A–G)</td>
+              <td>Finger independence drills, single-finger melody tracing, tapping rhythms on the lid before playing keys</td>
+              <td>Physical comfort at the instrument, confident navigation of the keyboard <span class="tag tag-b">Technique</span></td>
+            </tr>
+            <tr>
+              <td><span class="row-num">02</span></td>
+              <td class="row-icon-cell"><span class="row-icon">📜</span></td>
+              <td><span class="topic-name">Note Reading Basics</span><span class="topic-sub">Treble &amp; Bass Clef</span></td>
+              <td>Reading notes on treble and bass clef staff; ledger lines; note values — whole, half, quarter, and eighth notes; rests and time signatures (4/4, 3/4)</td>
+              <td>Flashcard drills, sight-reading simple 4-bar phrases, clapping rhythms while counting aloud</td>
+              <td>Sheet music literacy, rhythmic accuracy, reading both hands independently <span class="tag tag-b">Reading</span></td>
+            </tr>
+            <tr>
+              <td><span class="row-num">03</span></td>
+              <td class="row-icon-cell"><span class="row-icon">🔑</span></td>
+              <td><span class="topic-name">Major Scales &amp; Chords</span><span class="topic-sub">C, G, D, F Major</span></td>
+              <td>Playing C, G, D, and F major scales hands separately and together; understanding whole and half steps; building basic triads (I, IV, V); root position chords</td>
+              <td>Scale warmup exercises, chord blocking, simple chord transitions (C to G to F), identifying chords by ear</td>
+              <td>Finger dexterity, understanding of foundational harmony, chord recognition <span class="tag tag-b">Theory</span></td>
+            </tr>
+            <tr>
+              <td><span class="row-num">04</span></td>
+              <td class="row-icon-cell"><span class="row-icon">👂</span></td>
+              <td><span class="topic-name">Ear Training Intro</span><span class="topic-sub">Listen First</span></td>
+              <td>Distinguishing high vs. low pitches; identifying steps vs. leaps; echo clapping rhythms; singing back simple 3–5 note melodies; recognizing major vs. minor sounds</td>
+              <td>Call-and-response melodic echoing, "what note is this?" games, rhythm dictation clapping</td>
+              <td>Ear-to-hand coordination, musical awareness, beginning of playing by ear <span class="tag tag-b">Ear</span></td>
+            </tr>
+            <tr>
+              <td><span class="row-num">05</span></td>
+              <td class="row-icon-cell"><span class="row-icon">🎶</span></td>
+              <td><span class="topic-name">First Songs</span><span class="topic-sub">Real Music, Real Fast</span></td>
+              <td>Learning and performing simple pieces from Pop (Happy Birthday, Let It Be intro), Worship (Simple melodies), and Classical (Ode to Joy, Minuet in G) repertoire using both hands</td>
+              <td>Hands-separate practice, hands-together coordination drills, slow-to-fast tempo building, performance preparation</td>
+              <td>Coordination, musical expression, performance confidence, a repertoire to be proud of <span class="tag tag-b">Performance</span></td>
+            </tr>
+            <tr>
+              <td><span class="row-num">06</span></td>
+              <td class="row-icon-cell"><span class="row-icon">📖</span></td>
+              <td><span class="topic-name">Basic Music Theory</span><span class="topic-sub">Understanding Music</span></td>
+              <td>What is a beat? Measures and bar lines; time signatures explained; dynamics (forte, piano, mezzo); tempo markings (allegro, andante); learning to follow a conductor or metronome</td>
+              <td>Theory worksheets, identifying elements in songs you already know, metronome practice at different tempos</td>
+              <td>Musical comprehension, reading confidence, ability to follow written music instructions <span class="tag tag-b">Theory</span></td>
+            </tr>
+          </tbody>
+        </table>
+      </div>
+    </div>
+  </section>
+
+  <!-- ── INTERMEDIATE ── -->
+  <section id="intermediate" class="level-section sec-intermediate">
+    <div class="section-inner">
+      <div class="level-header reveal">
+        <div class="level-icon">🎵</div>
+        <h2 class="level-title i">Intermediate Curriculum</h2>
+        <p class="level-subtitle i">Expansion · Ear Training · Improvisation Intro</p>
+      </div>
+      <div class="table-container reveal">
+        <table class="big-table bt-i">
+          <thead>
+            <tr>
+              <th style="width:40px">#</th>
+              <th style="width:50px"></th>
+              <th style="width:22%">Topic</th>
+              <th style="width:32%">What You'll Learn</th>
+              <th>Key Exercises &amp; Activities</th>
+              <th>Skills You'll Gain</th>
+            </tr>
+          </thead>
+          <tbody>
+            <tr>
+              <td><span class="row-num">01</span></td>
+              <td class="row-icon-cell"><span class="row-icon">🎹</span></td>
+              <td><span class="topic-name">Advanced Technique</span><span class="topic-sub">Scales in All 12 Keys</span></td>
+              <td>All 12 major scales and natural minor scales; arpeggios; chord inversions (1st and 2nd position); sustain pedal technique; gradual and sudden dynamics</td>
+              <td>Hanon exercises, scale speed drills, inversion exercises across the full keyboard, pedaling coordination exercises</td>
+              <td>Fluency across all keys, dynamic range, expressive playing, physical stamina <span class="tag tag-i">Technique</span></td>
+            </tr>
+            <tr>
+              <td><span class="row-num">02</span></td>
+              <td class="row-icon-cell"><span class="row-icon">🎵</span></td>
+              <td><span class="topic-name">Chord Progressions</span><span class="topic-sub">The Language of Music</span></td>
+              <td>I–IV–V–vi progressions in multiple keys; dominant 7th chords; major and minor 7ths; common Pop, Worship, and Gospel progressions; chord charts and lead sheets</td>
+              <td>Chord progression jamming, transposing progressions to different keys, playing alongside recordings, chord chart reading</td>
+              <td>Harmonic vocabulary, song understanding, ability to play any song once you know its chords <span class="tag tag-i">Harmony</span></td>
+            </tr>
+            <tr>
+              <td><span class="row-num">03</span></td>
+              <td class="row-icon-cell"><span class="row-icon">👂</span></td>
+              <td><span class="topic-name">Play By Ear</span><span class="topic-sub">Your Ears as Sheet Music</span></td>
+              <td>Transcribing simple melodies and bass lines by ear; identifying major/minor chords in songs; interval training (2nds through octaves); recognizing common progressions by sound</td>
+              <td>Melody dictation exercises, chord progression ID games, transcribing short pop song intros, singing before playing</td>
+              <td>Musical independence, aural skills, ability to learn songs without sheet music <span class="tag tag-i">Ear</span></td>
+            </tr>
+            <tr>
+              <td><span class="row-num">04</span></td>
+              <td class="row-icon-cell"><span class="row-icon">💡</span></td>
+              <td><span class="topic-name">Intro to Improvisation</span><span class="topic-sub">Making It Your Own</span></td>
+              <td>Major and minor pentatonic scales; call-and-response patterns; melodic variation techniques; playing freely over a I–IV–V backing track; adding embellishments to melodies</td>
+              <td>Pentatonic scale improvisation jams, question-and-answer phrasing, recording yourself and listening back</td>
+              <td>Creativity, musical instinct, ability to express yourself freely in the moment <span class="tag tag-i">Improv</span></td>
+            </tr>
+            <tr>
+              <td><span class="row-num">05</span></td>
+              <td class="row-icon-cell"><span class="row-icon">🎶</span></td>
+              <td><span class="topic-name">Genre Exploration</span><span class="topic-sub">Find Your Voice</span></td>
+              <td>Learning pieces across Classical (Bach inventions, Beethoven sonatinas), Pop (intermediate arrangements), Gospel/Worship (full chord-based worship songs), and R&amp;B (groove-based pieces)</td>
+              <td>Genre comparison listening sessions, stylistic articulation exercises, adapting the same melody in two different styles</td>
+              <td>Stylistic versatility, performance confidence, broad musical identity <span class="tag tag-i">Performance</span></td>
+            </tr>
+            <tr>
+              <td><span class="row-num">06</span></td>
+              <td class="row-icon-cell"><span class="row-icon">📖</span></td>
+              <td><span class="topic-name">Music Theory II</span><span class="topic-sub">Going Deeper</span></td>
+              <td>Key signatures (all major and relative minor); introduction to modes (Dorian, Mixolydian); reading lead sheets; basic sight-reading; understanding chord function (tonic, subdominant, dominant)</td>
+              <td>Key signature drills, sight-reading 8-bar lead sheet passages, analyzing chord functions in familiar songs</td>
+              <td>Deeper music literacy, arrangement ability, professional reading fluency <span class="tag tag-i">Theory</span></td>
+            </tr>
+          </tbody>
+        </table>
+      </div>
+    </div>
+  </section>
+
+  <!-- ── ADVANCED ── -->
+  <section id="advanced" class="level-section sec-advanced">
+    <div class="section-inner">
+      <div class="level-header reveal">
+        <div class="level-icon">🏆</div>
+        <h2 class="level-title a">Advanced Curriculum</h2>
+        <p class="level-subtitle a">Mastery · Composition · Music Technology</p>
+      </div>
+      <div class="table-container reveal">
+        <table class="big-table bt-a">
+          <thead>
+            <tr>
+              <th style="width:40px">#</th>
+              <th style="width:50px"></th>
+              <th style="width:22%">Topic</th>
+              <th style="width:32%">What You'll Learn</th>
+              <th>Key Exercises &amp; Activities</th>
+              <th>Skills You'll Gain</th>
+            </tr>
+          </thead>
+          <tbody>
+            <tr>
+              <td><span class="row-num">01</span></td>
+              <td class="row-icon-cell"><span class="row-icon">🎹</span></td>
+              <td><span class="topic-name">Performance Mastery</span><span class="topic-sub">Concert-Level Playing</span></td>
+              <td>Complex classical and contemporary pieces with varied dynamics; rubato and expressive timing; advanced pedaling nuance; memorization techniques; stage presence and performance nerves management</td>
+              <td>Performance preparation cycle, mock recitals, recording and critique sessions, working pieces from raw read-through to polished performance</td>
+              <td>Concert-level performance ability, emotional depth, stage confidence and presence <span class="tag tag-a">Performance</span></td>
+            </tr>
+            <tr>
+              <td><span class="row-num">02</span></td>
+              <td class="row-icon-cell"><span class="row-icon">🎵</span></td>
+              <td><span class="topic-name">Advanced Harmony</span><span class="topic-sub">Jazz &amp; Neo-Soul Vocabulary</span></td>
+              <td>Extended chords — 9th, 11th, 13th; borrowed chords and modal mixture; modulation techniques; reharmonization; secondary dominants; understanding chord color and tension-release</td>
+              <td>Reharmonization exercises on familiar songs, extended chord voicing practice, composing progressions with borrowed chords</td>
+              <td>Rich jazz/neo-soul harmonic vocabulary, sophisticated arranging ability, advanced chord voicings <span class="tag tag-a">Harmony</span></td>
+            </tr>
+            <tr>
+              <td><span class="row-num">03</span></td>
+              <td class="row-icon-cell"><span class="row-icon">💡</span></td>
+              <td><span class="topic-name">Advanced Improvisation</span><span class="topic-sub">Real-Time Music Making</span></td>
+              <td>Modal improvisation (Dorian, Mixolydian, Lydian modes); blues scale and blues form; improvising over ii–V–I progressions; motivic development; trading solos in a call-and-response format</td>
+              <td>Mode-based jam tracks, blues improvisations, transcribing jazz piano phrases, spontaneous composition exercises</td>
+              <td>Real-time musical conversation, improvisation fluency, stage confidence in any musical situation <span class="tag tag-a">Improv</span></td>
+            </tr>
+            <tr>
+              <td><span class="row-num">04</span></td>
+              <td class="row-icon-cell"><span class="row-icon">🎧</span></td>
+              <td><span class="topic-name">Music Technology</span><span class="topic-sub">The Modern Musician</span></td>
+              <td>Introduction to DAW (Digital Audio Workstation) basics; MIDI recording and editing; digital keyboard features and sound design; basic production workflow; layering parts and creating arrangements digitally</td>
+              <td>Recording original piano parts into a DAW, building a multi-instrument arrangement from scratch, editing MIDI for clean playback</td>
+              <td>Studio and production skills, modern music creation ability, understanding of professional music workflow <span class="tag tag-a">Tech</span></td>
+            </tr>
+            <tr>
+              <td><span class="row-num">05</span></td>
+              <td class="row-icon-cell"><span class="row-icon">✍️</span></td>
+              <td><span class="topic-name">Composition &amp; Arranging</span><span class="topic-sub">Your Musical Voice</span></td>
+              <td>Writing original melodies over given chord progressions; harmonizing a given melody; arranging pop songs or original ideas for solo piano; understanding musical form (ABA, verse-chorus, through-composed)</td>
+              <td>Weekly composition prompts, arranging a favorite song for piano, creating an original short piece for performance</td>
+              <td>Creative musical output, development of a personal musical voice, professional-quality arranging skills <span class="tag tag-a">Composition</span></td>
+            </tr>
+            <tr>
+              <td><span class="row-num">06</span></td>
+              <td class="row-icon-cell"><span class="row-icon">📖</span></td>
+              <td><span class="topic-name">Music Theory III</span><span class="topic-sub">Scholarly Musicianship</span></td>
+              <td>Musical form analysis (Classical, Jazz, and Pop); introduction to two-voice counterpoint; advanced score reading; ear training for complex intervals and chord qualities; understanding voice leading principles</td>
+              <td>Analyzing scores of famous pieces, two-voice counterpoint exercises, advanced interval dictation, analyzing harmonic motion in recordings</td>
+              <td>Scholarly musicianship, professional-level literacy, ability to analyze and understand any piece of music <span class="tag tag-a">Theory</span></td>
+            </tr>
+          </tbody>
+        </table>
+      </div>
+    </div>
+  </section>
+
+  <!-- PROGRESSION -->
+  <section class="progression-section">
+    <div class="prog-inner">
+      <p class="section-label reveal">Your Path</p>
+      <h2 class="section-title reveal">The Learning Progression</h2>
+      <div class="divider reveal"><span class="divider-icon">♫</span></div>
+
+      <div class="prog-bar reveal">
+        <div class="prog-step ps-b">
+          <div class="ps-icon">🌱</div>
+          <div class="ps-name">Beginner</div>
+          <div class="ps-range">Level 1</div>
+          <div class="ps-desc">Technique, note reading, basic theory, first songs</div>
+        </div>
+        <div class="prog-step ps-i">
+          <div class="ps-icon">🎵</div>
+          <div class="ps-name">Intermediate</div>
+          <div class="ps-range">Level 2</div>
+          <div class="ps-desc">All keys, ear training, progressions, improv intro</div>
+        </div>
+        <div class="prog-step ps-a">
+          <div class="ps-icon">🏆</div>
+          <div class="ps-name">Advanced</div>
+          <div class="ps-range">Level 3</div>
+          <div class="ps-desc">Performance mastery, composition, music tech</div>
+        </div>
+      </div>
+      <p class="reveal" style="color:var(--text-muted); font-size:0.88rem; line-height:1.7; max-width:600px; margin:0 auto;">Every student's pace is unique — progression through levels is guided by skill, confidence, and goals, not by age or a fixed timeline. Lessons adapt to you.</p>
+    </div>
+  </section>
+
+  <!-- CTA -->
+  <div class="page-cta">
+    <h3 class="reveal">Ready to Begin Your Journey?</h3>
+    <p class="reveal">Not sure which level fits you? The free trial class will help us find the perfect starting point together.</p>
+    <div class="reveal">
+      <a href="booking.html" class="cta-btn">Book Your Free Trial</a>
+      <a href="about.html" class="cta-btn outline">Meet Your Instructor</a>
+    </div>
+  </div>
+
+</div><!-- end page-content -->
+
+<!-- FOOTER -->
+<footer>
+  <a href="index.html" class="footer-logo"><span class="av">AV</span><span class="rest">MUSIC</span><span class="amp">&</span><span class="rest">JAM</span></a>
+  <p class="footer-copy">© 2025 AVMusic&Jam · Learn Beyond Notes · Frisco, TX</p>
+</footer>
+
+<script>
+  const reveals = document.querySelectorAll('.reveal');
+  const io = new IntersectionObserver((entries) => {
+    entries.forEach((e, i) => {
+      if (e.isIntersecting) {
+        setTimeout(() => e.target.classList.add('visible'), i * 60);
+        io.unobserve(e.target);
+      }
+    });
+  }, { threshold: 0.1 });
+  reveals.forEach(r => io.observe(r));
+
+  // Hamburger menu
+  const hamburger = document.getElementById('hamburger');
+  const mobileMenu = document.getElementById('mobile-menu');
+  if (hamburger && mobileMenu) {
+    hamburger.addEventListener('click', () => {
+      hamburger.classList.toggle('open');
+      mobileMenu.classList.toggle('open');
+    });
+    // Close when a link is clicked
+    mobileMenu.querySelectorAll('a').forEach(a => {
+      a.addEventListener('click', () => {
+        hamburger.classList.remove('open');
+        mobileMenu.classList.remove('open');
+      });
+    });
+    // Close on outside click
+    document.addEventListener('click', (e) => {
+      if (!hamburger.contains(e.target) && !mobileMenu.contains(e.target)) {
+        hamburger.classList.remove('open');
+        mobileMenu.classList.remove('open');
+      }
+    });
+  }
+</script>
+</body>
+</html>
